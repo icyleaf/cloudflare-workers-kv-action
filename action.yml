@@ -1,5 +1,5 @@
 name: 'Cloudflare Workers KV Action'
-description: 'Cloudflare Workers KV Action'
+description: 'Dead simple Put and get values from Cloudflare Workers KV action'
 inputs:
   namespace_id:
     description: 'Cloudflare namespace identifier'
