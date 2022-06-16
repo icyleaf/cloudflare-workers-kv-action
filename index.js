@@ -1,25 +1,62 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const WorkersKVREST = require('@sagi.io/workers-kv');
+const cloudFlareWorkersKV = require('@kikobeats/cloudflare-workers-kv');
+const ms = require('ms');
 
-try {
-  const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const cfApiKey = process.env.CLOUDFLARE_API_KEY;
-  const cfEmail = process.env.CLOUDFLARE_EMAIL;
-  const cfNamespaceId = core.getInput('namespace_id');
-  const KV = new WorkersKVREST({ cfAccountId, cfApiKey, cfEmail, cfNamespaceId });
-  const allKeys = await KV.listAllKeys({ namespaceId })
+async function main() {
+  try {
+    const cfAccountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+    const cfKey = process.env.CLOUDFLARE_API_TOKEN;
+    const cfNamespaceId = core.getInput('namespace_id', { required: true });
 
-  console.log(`Using ${cfNamespaceId}!`);
-  console.log(`Keys ${allKeys}!`);
+    const store = cloudFlareWorkersKV({
+      accountId: cfAccountId,
+      key: cfKey,
+      namespaceId: cfNamespaceId
+    })
+    console.log(`Using ${cfNamespaceId}!`);
 
-  const time = (new Date()).toTimeString();
+    const inputKey = core.getInput('key', { required: true });
+    const inputValue = core.getInput('value');
+    const overwrite = core.getBooleanInput('overwrite');
+    const expiration = core.getInput('expiration');
+    expiration_ttl = null;
+    if (expiration && (expiration.length > 0 || Object.keys(expiration).length > 0)) {
+      expiration_ttl = ms(expiration);
+    }
 
-  core.setOutput('result', true);
-  core.setOutput('value', time);
+    core.warning(`expiration is ${expiration_ttl}`);
 
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
+    body = await store.get(inputKey);
+    result = true;
+    if (body && (body.length > 0 || Object.keys(body).length > 0)) {
+      if (overwrite == true) {
+        await store.delete(inputKey);
+        core.warning(`Setting value for ${inputKey} (overwrite: ${overwrite})`);
+
+        body = { value: inputValue }
+        result = await store.set(inputKey, body, expiration_ttl);
+      } else {
+        core.warning(`Getting value for ${inputKey}`);
+      }
+    } else {
+      core.warning(`Setting value for ${inputKey}`);
+
+      body = { value: inputValue }
+      result = await store.set(inputKey, body, expiration_ttl);
+    }
+
+    core.warning(`value is ${body.value}, result is ${result}`);
+
+    core.setOutput('result', result);
+    core.setOutput('value', body.value);
+
+    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    console.log(`The event payload: ${payload}`);
+  } catch (error) {
+    core.setFailed(error.message);
+    core.setFailed(error.stack);
+  }
 }
+
+main()

@@ -12,6 +12,7 @@
   "dependencies": {
     "@actions/core": "^1.9.0",
     "@actions/github": "^5.0.3",
-    "@sagi.io/workers-kv": "^0.0.12"
+    "@kikobeats/cloudflare-workers-kv": "^1.0.11",
+    "ms": "^2.1.3"
   }
 }

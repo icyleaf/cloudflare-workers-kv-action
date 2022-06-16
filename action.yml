@@ -13,11 +13,9 @@ inputs:
   overwrite:
     description: 'Overwrite Cloudflare Workers KV value'
     required: false
+    default: "false"
   expiration:
     description: 'Cloudflare Workers KV key expiration date'
-    required: false
-  expiration_ttl:
-    description: 'Cloudflare KV key expiration time'
     required: false
 
 outputs:

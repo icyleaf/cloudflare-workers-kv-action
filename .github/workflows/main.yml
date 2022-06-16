@@ -1,0 +1,33 @@
+on: [push]
+
+jobs:
+  test_job:
+    runs-on: ubuntu-latest
+    name: A job to say kv
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cloudflare Workers KV action test
+        uses: ./
+        id: kv
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        with:
+          namespace_id: 85998721d36c4232b1c4939644d3a791
+          key: ${{ runner.os }}-action-key
+          value: foobar
+          overwrite: true
+      - name: Get the output
+        run: echo "The value is ${{ steps.kv.outputs.value }}"
+      - name: exprire kv test
+        uses: ./
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        with:
+          namespace_id: 85998721d36c4232b1c4939644d3a791
+          key: ${{ runner.os }}-action-key-autoremove
+          value: remove_me
+          expiration: 1m
+          overwrite: true
