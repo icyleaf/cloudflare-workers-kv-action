@@ -1,0 +1,31 @@
+name: 'Cloudflare Workers KV Action'
+description: 'Cloudflare Workers KV Action'
+inputs:
+  namespace_id:
+    description: 'Cloudflare namespace identifier'
+    required: true
+  key:
+    description: 'Cloudflare Workers KV key'
+    required: true
+  value:
+    description: 'Cloudflare Workers KV value'
+    required: false
+  overwrite:
+    description: 'Overwrite Cloudflare Workers KV value'
+    required: false
+  expiration:
+    description: 'Cloudflare Workers KV key expiration date'
+    required: false
+  expiration_ttl:
+    description: 'Cloudflare KV key expiration time'
+    required: false
+
+outputs:
+  result:
+    description: 'Return a boolean to operate result between success and fail'
+  value:
+    description: 'Return fetch or set value of given key'
+
+runs:
+  using: 'node16'
+  main: 'index.js'
