@@ -1,5 +1,4 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
 const cloudFlareWorkersKV = require('@kikobeats/cloudflare-workers-kv');
 const ms = require('ms');
 
@@ -50,9 +49,6 @@ async function main() {
 
     core.setOutput('result', result);
     core.setOutput('value', body.value);
-
-    const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`);
   } catch (error) {
     core.setFailed(error.message);
     core.setFailed(error.stack);
