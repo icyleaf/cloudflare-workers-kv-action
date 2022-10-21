@@ -1,17 +1,19 @@
 {
   "name": "cloudflare-workers-kv-action",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dead simple Put and get values from Cloudflare Workers KV action",
   "main": "index.js",
   "scripts": {
+    "package": "ncc build index.js -o dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "icyleaf",
   "license": "ISC",
   "dependencies": {
-    "@actions/core": "^1.9.0",
+    "@actions/core": "^1.10.0",
     "@kikobeats/cloudflare-workers-kv": "^1.0.11",
+    "@vercel/ncc": "^0.34.0",
     "ms": "^2.1.3"
   }
 }

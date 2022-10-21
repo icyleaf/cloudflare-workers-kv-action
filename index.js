@@ -13,7 +13,7 @@ async function main() {
       key: cfKey,
       namespaceId: cfNamespaceId
     })
-    console.log(`Using ${cfNamespaceId}!`);
+    core.debug(`Using ${cfNamespaceId}!`);
 
     const inputKey = core.getInput('key', { required: true });
     const inputValue = core.getInput('value');
@@ -24,28 +24,28 @@ async function main() {
       expiration_ttl = ms(expiration);
     }
 
-    core.warning(`expiration is ${expiration_ttl}`);
+    core.debug(`expiration is ${expiration_ttl}`);
 
     body = await store.get(inputKey);
     result = true;
     if (body && (body.length > 0 || Object.keys(body).length > 0)) {
       if (overwrite == true) {
         await store.delete(inputKey);
-        core.warning(`Setting value for ${inputKey} (overwrite: ${overwrite})`);
+        core.info(`Setting value for ${inputKey} (overwrite: ${overwrite})`);
 
         body = { value: inputValue }
         result = await store.set(inputKey, body, expiration_ttl);
       } else {
-        core.warning(`Getting value for ${inputKey}`);
+        core.info(`Getting value for ${inputKey}`);
       }
     } else {
-      core.warning(`Setting value for ${inputKey}`);
+      core.info(`Setting value for ${inputKey}`);
 
       body = { value: inputValue }
       result = await store.set(inputKey, body, expiration_ttl);
     }
 
-    core.warning(`value is ${body.value}, result is ${result}`);
+    core.info(`value is ${body.value}, result is ${result}`);
 
     core.setOutput('result', result);
     core.setOutput('value', body.value);
