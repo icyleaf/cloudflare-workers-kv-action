@@ -19,7 +19,7 @@ Needs [API Token](https://dash.cloudflare.com/profile/api-tokens) (User Profile 
     echo "::set-output name=sha::${GIT_SHA}"
 
 - name: Fetch cached git commit else store it
-  uses: icyleaf/cloudflare-workers-kv-action@v0.1.0
+  uses: icyleaf/cloudflare-workers-kv-action@v0.2.0
   id: cache-git-commit
   env:
     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -30,7 +30,7 @@ Needs [API Token](https://dash.cloudflare.com/profile/api-tokens) (User Profile 
     value: ${{ steps.git-commit.outputs.sha }}
 
 - name: Store current git commit
-  uses: icyleaf/cloudflare-workers-kv-action@v0.1.0
+  uses: icyleaf/cloudflare-workers-kv-action@v0.2.0
   if: steps.git-commit.outputs.sha != steps.cache-git-commit.outputs.value
   env:
     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
