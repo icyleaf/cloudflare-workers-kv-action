@@ -25,5 +25,5 @@ outputs:
     description: 'Return fetch or set value of given key'
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'index.js'
